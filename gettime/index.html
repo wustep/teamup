@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Get Time</title>
+	<link rel="stylesheet" href="../lib/jquery/jquery-ui.min.css">
+</head>
+<body>
+	<form id="f" onsubmit="return false;">
+	Calendar: <input type="text" name="cal" class="ui-widget-content" id="calendar" placeholder="ks4de73148f95c7667">&nbsp;<input type="password" class="ui-widget-content" id="password" placeholder="Password"><br>
+	Sub-calendars: <input type="text" name="sub" class="ui-widget-content" id="subcalendars" placeholder="730624, 732625, 9820624"><br>
+	Date: <input type="text" class="ui-widget-content" id="date-start"> to <input type="text" class="ui-widget-content" id="date-end"><br><br>
+	<input type="submit" id="submit" value="Submit">
+	</form><br>
+	<div id="output"></div>
+	
+	<script src="../lib/jquery/jquery.min.js"></script>
+	<script src="../lib/jquery/jquery-ui.min.js"></script>
+	<script src="../lib/moment.js"></script>
+	<script type="text/javascript">
+	
+	function getTimes(calendarKey, subcalendars, password, dateStart, dateEnd) {
+		$.ajax({
+			url: "https://api.teamup.com/" + calendarKey + "/events?startDate="+dateStart+"&endDate="+dateEnd,
+			type: 'get',
+			headers: {
+				"Teamup-Token": '5668a0a6945a3199ababf3e17fe4cea817fb6d44520379d6a9515b5eb24d74ce',
+				"Teamup-Password": password
+			},
+			success : function (data) {
+				var total = moment.duration(0);
+				$("#output").html("");
+				$.each(data, function (item, value) {
+					if (item == "events") {
+						$.each(value, function (i, object) {
+							if (!object["all_day"] && object["subcalendar_id"] == $("#subcalendars").prop("value")) {
+								var eventCal = "cal-" + object["subcalendar_id"];
+								var eventTitle = object["title"];
+								var eventStart = moment(object["start_dt"].substring(0,19));
+								var eventEnd = moment(object["end_dt"].substring(0,19));
+								var timeElapsed = moment.duration(eventEnd.diff(eventStart));
+								total = moment.duration(total.add(timeElapsed));
+								$("#output").append(eventCal + " " + eventTitle + " " + timeElapsed.hours() + "h " + timeElapsed.minutes() + "m<br>");
+							}
+						});
+					}
+				});
+				$("#output").append("Total: " + total.hours() + "h " + total.minutes() + "m");
+			}, 
+			error : function (xhr,e,t) {
+				$("#output").html(xhr.status + "<br>" + xhr.responseText);
+			}
+		});
+		console.log(password);
+	}
+
+	$(function() {
+		var f =  moment().date(1).format("YYYY-MM-DD");
+		var l = moment().date(1).add(1, 'months').subtract(1, 'days').format("YYYY-MM-DD");
+		$("#date-start").attr('value', f);
+		$("#date-end").attr('value', l);	
+
+		$("#date-start").datepicker({ // Set up #date-start input element
+			defaultDate: "+1w",
+			changeMonth: true,
+			dateFormat: "yy-mm-dd",
+			numberOfMonths: 2,
+			onClose: function( selectedDate ) {
+				$("#date-end").datepicker( "option", "minDate", selectedDate );
+			}
+		});
+		$("#date-end").datepicker({ // Set up #date-end input element
+			defaultDate: "+1w",
+			changeMonth: true,
+			dateFormat: "yy-mm-dd",
+			numberOfMonths: 2,
+			onClose: function( selectedDate ) {
+				$("#date-start").datepicker( "option", "maxDate", selectedDate );
+			}
+		});
+		$("#submit").button().click(function() {
+			var calendarKey = $("#calendar").prop("value");
+			var subcalendars = $("#subcalendars").prop("value");
+			getTimes(calendarKey, subcalendars, $("#password").prop("value"), $("#date-start").prop("value"), $("#date-end").prop("value"));
+		});
+	});
+	</script>
+</body>
+</html>
