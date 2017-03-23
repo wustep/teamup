@@ -32,19 +32,19 @@
 				$.each(data, function (item, value) {
 					if (item == "events") {
 						$.each(value, function (i, object) {
-							if (!object["all_day"] && object["subcalendar_id"] == $("#subcalendars").prop("value")) {
+							if (!object["all_day"] && ($("#subcalendars").prop("value").length < 2 || object["subcalendar_id"] == $("#subcalendars").prop("value"))) {
 								var eventCal = "cal-" + object["subcalendar_id"];
 								var eventTitle = object["title"];
 								var eventStart = moment(object["start_dt"].substring(0,19));
 								var eventEnd = moment(object["end_dt"].substring(0,19));
 								var timeElapsed = moment.duration(eventEnd.diff(eventStart));
 								total = moment.duration(total.add(timeElapsed));
-								$("#output").append(eventCal + " " + eventTitle + " " + timeElapsed.hours() + "h " + timeElapsed.minutes() + "m<br>");
+								$("#output").append("<i>" + eventCal + "</i> - " + eventTitle + " - <i>" + Math.floor(timeElapsed.asHours()) + "h " + timeElapsed.minutes() + "m</i><br>");
 							}
 						});
 					}
 				});
-				$("#output").append("Total: " + total.hours() + "h " + total.minutes() + "m");
+				$("#output").append("<b>Total: " + Math.floor(total.asHours()) + "h " + total.minutes() + "m</b>");
 			}, 
 			error : function (xhr,e,t) {
 				$("#output").html(xhr.status + "<br>" + xhr.responseText);
