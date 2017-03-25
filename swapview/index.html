@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Swap View</title>
+	<style>
+		a.bookmarklet {
+			display: -moz-inline-box;
+			display: inline-block;
+			padding: 1px 6px;
+			height: 18px;
+			color: #fff;
+			background: #32a0eb;
+			-webkit-border-radius: 4px;
+			-moz-border-radius: 4px;
+			border-radius: 4px;
+		}
+		body {
+			font-family: Helvetica, Sans-Serif;
+		}
+	</style>
+</head>
+<body>
+	Teamup: Swap View to Single Colored Events<br>
+	Bookmark this link by dragging it to your bookmark bar! <a class="bookmarklet" href="javascript:(function()%7BsetInterval(function()%20%7Bvar%20e%20%3D%20%20document.querySelectorAll('div.ext-cal-evt')%3Bfor(var%20i%20%3D%200%3B%20i%20%3C%20e.length%3B%20i%2B%2B)%7Be%5Bi%5D.style.removeProperty(%22background-image%22)%3B%7D%7D%2C%201000)%7D)()">Swap View</a>
+</body>
+</html>
