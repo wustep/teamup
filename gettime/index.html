@@ -3,13 +3,19 @@
 <head>
 	<title>Get Time</title>
 	<link rel="stylesheet" href="../lib/jquery/jquery-ui.min.css">
+	<style>
+		body {
+			font-family: Helvetica, Arial, sans-serif;
+			font-size: 13px; 
+		}
+	</style>
 </head>
 <body>
 	<form id="f" onsubmit="return false;">
-	Calendar: <input type="text" name="cal" class="ui-widget-content" id="calendar" placeholder="ks4de73148f95c7667">&nbsp;<input type="password" class="ui-widget-content" id="password" placeholder="Password"><br>
-	Sub-calendars: <input type="text" name="sub" class="ui-widget-content" id="subcalendars" placeholder="730624, 732625, 9820624"><br>
-	Date: <input type="text" class="ui-widget-content" id="date-start"> to <input type="text" class="ui-widget-content" id="date-end"><br><br>
-	<input type="submit" id="submit" value="Submit">
+		<label for="cal">Calendar:</label> <input type="text" name="cal" class="ui-widget-content" id="calendar" placeholder="ks4de73148f95c7667" title="Calendar key, found in the URL">&nbsp;<input type="password" class="ui-widget-content" id="password" placeholder="Password" title="Enter your password if you have one set up!"><br>	
+		<label for="sub">Sub-calendars:</label> <input type="text" name="sub" class="ui-widget-content" id="subcalendars" placeholder="730624, 732625, 9820624" title="List of subcalendar IDs, separated by spaces. Leave empty if you're not sure or want to get events from all subcalendars. Once you press submit, you'll see the IDs."><br>
+		<label for="date-start">Date:</label> <input type="text" class="ui-widget-content" id="date-start"> to <input type="text" class="ui-widget-content" id="date-end"><br><br>
+		<input type="submit" id="submit" value="Submit">
 	</form><br>
 	<div id="output"></div>
 	
@@ -54,6 +60,7 @@
 	}
 
 	$(function() {
+		$(document).tooltip().off("mouseover mouseout");
 		var f =  moment().date(1).format("YYYY-MM-DD");
 		var l = moment().date(1).add(1, 'months').subtract(1, 'days').format("YYYY-MM-DD");
 		$("#date-start").attr('value', f);
@@ -63,7 +70,7 @@
 			defaultDate: "+1w",
 			changeMonth: true,
 			dateFormat: "yy-mm-dd",
-			numberOfMonths: 2,
+			numberOfMonths: 1,
 			onClose: function( selectedDate ) {
 				$("#date-end").datepicker( "option", "minDate", selectedDate );
 			}
@@ -72,7 +79,7 @@
 			defaultDate: "+1w",
 			changeMonth: true,
 			dateFormat: "yy-mm-dd",
-			numberOfMonths: 2,
+			numberOfMonths: 1,
 			onClose: function( selectedDate ) {
 				$("#date-start").datepicker( "option", "maxDate", selectedDate );
 			}
